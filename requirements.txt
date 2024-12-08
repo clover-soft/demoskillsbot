@@ -1,0 +1,5 @@
+aiogram
+sqlalchemy
+mysql-connector-python
+openai
+requests
