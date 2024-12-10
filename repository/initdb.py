@@ -1,5 +1,5 @@
-from database.database import Database
-from database.models.user import User
+from repository.database import Database
+from repository.models.user import User
 from sqlalchemy.engine.reflection import Inspector
 
 

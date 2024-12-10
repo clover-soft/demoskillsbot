@@ -1,12 +1,13 @@
 import json
 from jinja2 import Template
+from repository.states_from import StatesForm
 
 
 class Translate:
     @staticmethod
-    def get_phrase(user, code, **kwargs):
-        language_prefix = user.tg_user_json_dict.get('language_code', 'ru')
-        locale_file = f'locale/{language_prefix}.json'
+    def get_phrase(code, **kwargs):
+        language_code = str(StatesForm.select_language).lower()
+        locale_file = f'locale/{language_code}.json'
         try:
             with open(locale_file, 'r') as f:
                 locale_data = json.load(f)

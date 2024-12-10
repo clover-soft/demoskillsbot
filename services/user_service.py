@@ -1,5 +1,5 @@
-from database.models.user import User
-from database.database import Database
+from repository.models.user import User
+from repository.database import Database
 
 
 class UserService:

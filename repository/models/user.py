@@ -1,4 +1,4 @@
-from database.database import Database
+from repository.database import Database
 from sqlalchemy import Column, Integer, String, Text, DateTime, JSON
 from sqlalchemy.types import JSON
 from datetime import datetime

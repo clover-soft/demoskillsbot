@@ -1,0 +1,5 @@
+{
+    "hello": "Hello {{name}}",
+    "understand": "Sorry, I don't understand you",
+    "limit_info": "Your request limit for {{model_name}} today is: **{{limit}} requests**, balance will be automatically replenished tomorrow"
+}
