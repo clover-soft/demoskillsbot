@@ -2,13 +2,15 @@ import asyncio
 from config.config import Config
 import logging
 from logging.handlers import RotatingFileHandler
+from database.initdb import InitDB
 from aiogram import Bot, Dispatcher, html
 from aiogram.client.default import DefaultBotProperties
 from aiogram.types import Message
 from aiogram.enums import ParseMode
 from aiogram.filters import CommandStart
-from database.initdb import InitDB
-from services.user_service import UserService
+from aiogram.fsm.state import StatesGroup, State
+from aiogram.fsm.context import FSMContext
+
 # инициализация бота и диспетчера
 bot = Bot(token=Config().get_config_item('BOT_TOKEN'), default=DefaultBotProperties(
     parse_mode=ParseMode.HTML))
@@ -23,33 +25,32 @@ formatter = logging.Formatter(
 handler.setFormatter(formatter)
 
 
-# обработка команды /start
+# async def before_handler(update: types.Update, call: types.CallbackQuery = None):
+#     print('Before handler')
+#     # Выполняем методы до обработки сообщения
+
+# async def after_handler(update: types.Update, call: types.CallbackQuery = None):
+#     print('After handler')
+#     # Выполняем методы после обработки сообщения
+
+
+class Form(StatesGroup):
+    name = State()
+    like_bots = State()
+    language = State()
+
 
 @dp.message(CommandStart())
 async def start_command(message: Message):
-    full_name = message.from_user.full_name.encode('utf-8')
-    UserService().add_user(message.from_user.id, full_name, message.from_user.username)
-    await message.answer(f"Привет, {html.bold(message.from_user.full_name)}!")
+    from handlers.start_command import HandlerStartCommand
+    await HandlerStartCommand().handle_request(message)
 
 
 # обработка сообщений
 @dp.message()
 async def echo_handler(message: Message) -> None:
-    """
-    Handler will forward receive a message back to the sender
-
-    By default, message handler will handle all message types (like a text, photo, sticker etc.)
-    """
-    try:
-        user_name = 'Unknown'
-        User = UserService().get_user(message.from_user.id)
-        if User:
-            user_name = User.full_name
-        await message.answer(f"Hi, {user_name}!")
-        # await message.send_copy(chat_id=message.chat.id)
-    except TypeError:
-        # But not all the types is supported to be copied so need to handle it
-        await message.answer("Nice try!")
+    from handlers.echo import HandlerEcho
+    await HandlerEcho().handle_request(message)
 
 
 async def main() -> None:

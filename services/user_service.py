@@ -10,17 +10,22 @@ class UserService:
             cls.__instance = super().__new__(cls)
         return cls.__instance
 
-    def add_user(self, user_id, name, user_name):
+    def add_user(self, tg_user_id, tg_user_name, tg_user_json):
         session = Database().get_session()
-        user = session.query(User).filter_by(telegram_id=user_id).first()
+        user = session.query(User).filter_by(tg_user_id=tg_user_id).first()
         if user:
-            user.full_name = name
-            user.user_name = user_name
+            user.tg_user_name = tg_user_name
+            user.tg_user_json = tg_user_json
         else:
-            user = User(telegram_id=user_id,
-                        full_name=name, user_name=user_name)
+            user = User(
+                tg_user_id=tg_user_id,
+                tg_user_name=tg_user_name,
+                tg_user_json=tg_user_json
+            )
             session.add(user)
         session.commit()
+        session.refresh(user)
+        return user
 
     def get_user(self, user_id):
         session = Database().get_session()
